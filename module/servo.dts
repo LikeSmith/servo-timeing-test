@@ -1,0 +1,39 @@
+/*
+ *  servo.dts
+ *
+ * Author: LikeSmith
+ * Date: MARCH 2023
+ * 
+ * overlay to set gpios to control servos with
+ */
+
+/dts-v1/;
+/plugin/;
+
+/ {
+    // Add pin configureation node to the parent pinctrl
+    fragment@0 {
+        target = <0xf8>;
+        __overlay__ {
+            servos_conf: pinctrl_servos{
+                samsung,pins = "gpx1-2", "gpx1-3";
+                samsung,pin-function = "0x00";
+            };
+        };
+    };
+    // add custom device with gpio pins
+    fragment@1 {
+        target-path = "/";
+        __overlay__ {
+            servos {
+                compatible = "servos";
+                status = "okay";
+                pinctrl-0 = <&servos_conf>;
+                servo-gpios =
+                    <0xfa 0x02 0x0>, // servo 0
+                    <0xfa 0x03 0x0>; // servo 1
+                n-servos = "2";
+            };
+        };
+    };
+};
